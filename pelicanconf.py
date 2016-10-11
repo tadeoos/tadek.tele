@@ -14,6 +14,8 @@ SITEDESCRIPTION = '%s\'s Thoughts and Writings' % AUTHOR
 
 
 PATH = 'content'
+STATIC_PATHS = ['images']
+PAGE_PATHS = ['pages']
 
 TIMEZONE = 'Europe/Warsaw'
 
@@ -27,19 +29,21 @@ AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 
 # Blogroll
-LINKS = (('About', '/about/'),
-         )
+# LINKS = (('About', ''),)
 
 # Social widget
 SOCIAL = (('github', 'http://github.com/tadeoos'),
           ('twitter', 'http://twitter.com/tdkte'),
-          ('keybase', 'http://keybase.io/tadeo'),)
+          ('keybase', 'http://keybase.io/tadeo'),
+          ('envelope-o', 'mailto:tadekte@gmail.com'),
+          )
 
 MAIN_MENU = True
 
 MENUITEMS = (('Archives', '/archives.html'),
              ('Categories', '/categories.html'),
              ('Tags', '/tags.html'),)
+            #  ('About', '/base.html'))
 
 DEFAULT_PAGINATION = 10
 
