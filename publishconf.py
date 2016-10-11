@@ -18,7 +18,6 @@ CATEGORY_FEED_ATOM = 'feeds/%s.atom.xml'
 
 DELETE_OUTPUT_DIRECTORY = True
 
-THEME = 'Flex'
 
 # Following items are often useful when publishing
 
