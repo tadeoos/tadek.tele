@@ -3,8 +3,15 @@
 from __future__ import unicode_literals
 
 AUTHOR = 'Tadek Teleżyński'
-SITENAME = 'kubona'
-SITEURL = ''
+SITENAME = 'blog'
+SITEURL = 'http://localhost:8000'
+SITELOGO =  'images/t.gif'
+
+SITESUBTITLE = 'I am computer science student'
+SITEDESCRIPTION = '%s\'s Thoughts and Writings' % AUTHOR
+
+
+
 
 PATH = 'content'
 
@@ -20,16 +27,30 @@ AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 
 # Blogroll
-LINKS = (('Pelican', 'http://getpelican.com/'),
-         ('Python.org', 'http://python.org/'),
-         ('Jinja2', 'http://jinja.pocoo.org/'),
-         ('You can modify those links in your config file', '#'),)
+LINKS = (('About', '/about/'),
+         )
 
 # Social widget
-SOCIAL = (('You can add links in your config file', '#'),
-          ('Another social link', '#'),)
+SOCIAL = (('github', 'http://github.com/tadeoos'),
+          ('twitter', 'http://twitter.com/tdkte'),
+          ('keybase', 'http://keybase.io/tadeo'),)
+
+MAIN_MENU = True
+
+MENUITEMS = (('Archives', '/archives.html'),
+             ('Categories', '/categories.html'),
+             ('Tags', '/tags.html'),)
 
 DEFAULT_PAGINATION = 10
 
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
+
+#THEME
+THEME = "./Flex"
+
+EXTRA_PATH_METADATA = {
+    'extra/custom.css': {'path': 'static/custom.css'},
+}
+
+CUSTOM_CSS = 'theme/custom.css'
