@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 AUTHOR = 'Tadek Teleżyński'
 SITENAME = 'blog'
-SITEURL = 'http://localhost:8000'
+SITEURL = ''
 SITELOGO =  'images/t.gif'
 
 SITESUBTITLE = 'I am computer science student'
