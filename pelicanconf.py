@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 AUTHOR = 'Tadek Teleżyński'
 SITENAME = 'blog'
-SITEURL = ''
+SITEURL = 'https://tadeoos.github.io'
 SITELOGO =  '/images/t.gif'
 
 SITESUBTITLE = 'I am computer science student'
