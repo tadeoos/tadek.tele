@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 AUTHOR = 'Tadek Teleżyński'
 SITENAME = 'blog'
 SITEURL = ''
-SITELOGO =  'images/t.gif'
+SITELOGO =  '/images/t.gif'
 
 SITESUBTITLE = 'I am computer science student'
 SITEDESCRIPTION = '%s\'s Thoughts and Writings' % AUTHOR
@@ -14,8 +14,8 @@ SITEDESCRIPTION = '%s\'s Thoughts and Writings' % AUTHOR
 
 
 PATH = 'content'
-STATIC_PATHS = ['images']
-PAGE_PATHS = ['pages']
+# STATIC_PATHS = ['images']
+# PAGE_PATHS = ['pages']
 
 TIMEZONE = 'Europe/Warsaw'
 
@@ -34,7 +34,7 @@ AUTHOR_FEED_RSS = None
 # Social widget
 SOCIAL = (('github', 'http://github.com/tadeoos'),
           ('twitter', 'http://twitter.com/tdkte'),
-          ('keybase', 'http://keybase.io/tadeo'),
+        #   ('keybase', 'http://keybase.io/tadeo'),
           ('envelope-o', 'mailto:tadekte@gmail.com'),
           )
 
@@ -43,12 +43,11 @@ MAIN_MENU = True
 MENUITEMS = (('Archives', '/archives.html'),
              ('Categories', '/categories.html'),
              ('Tags', '/tags.html'),)
-            #  ('About', '/base.html'))
 
 DEFAULT_PAGINATION = 10
 
 # Uncomment following line if you want document-relative URLs when developing
-#RELATIVE_URLS = True
+RELATIVE_URLS = True
 
 #THEME
 THEME = "./Flex"

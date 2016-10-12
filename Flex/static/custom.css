@@ -3,7 +3,7 @@ aside {
 }
 
 a {
-    color: #a6300b
+    color: #069
 }
 
 a.btn {
@@ -13,4 +13,42 @@ a.btn {
 
 body {
     background-color: #b8bdba;
+    min-width: 100%;
+    min-height: 100%;
+}
+
+.tiptext {
+    color:#069;
+    cursor:pointer;
+}
+.description {
+    display:none;
+    position:absolute;
+    border:1px solid #000;
+    width:500px;
+    height:400px;
+}
+
+iframe:hover {
+    display: block;
+}
+
+a:hover iframe{
+    display: block
+}
+footer {
+    clear: both;
+    position: fixed;
+    bottom: 0;
+    height: 3em;
+    margin-top: -3em;
+    width: inherit;
+}
+
+main footer, main nav{
+    border-color: #2b7c35;
+}
+
+main {
+    height: 100%;
 }
