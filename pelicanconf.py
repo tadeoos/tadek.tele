@@ -3,11 +3,11 @@
 from __future__ import unicode_literals
 
 AUTHOR = 'Tadek Teleżyński'
-SITENAME = 'blog'
-SITEURL = 'https://tadeoos.github.io'
+SITENAME = 'Kubona'
+SITEURL = ''
 SITELOGO =  '/images/t.gif'
 
-SITESUBTITLE = 'I am computer science student'
+SITESUBTITLE = ''
 SITEDESCRIPTION = '%s\'s Thoughts and Writings' % AUTHOR
 
 
@@ -47,7 +47,7 @@ MENUITEMS = (('Archives', '/archives.html'),
 DEFAULT_PAGINATION = 10
 
 # Uncomment following line if you want document-relative URLs when developing
-# RELATIVE_URLS = True
+RELATIVE_URLS = True
 
 #THEME
 THEME = "./Flex"
