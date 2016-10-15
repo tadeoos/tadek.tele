@@ -46,6 +46,9 @@ MENUITEMS = (('Archives', '/archives.html'),
              ('Tags', '/tags.html'),)
 
 DEFAULT_PAGINATION = 10
+#google analytics
+
+GOOGLE_ANALYTICS = 'UA-85737951-1'
 
 
 
