@@ -51,7 +51,7 @@ body {
     background-color: #b8bdba;
     min-width: 100%;
     min-height: 100%;
-    font-family: "PT Serif","skolar-1","skolar-2",sans-serif;
+    font-family: "PT Serif","skolar-1","skolar-2",'Palatino Linotype',Helvetica,sans-serif;
     line-height: 1.9em;
 }
 
@@ -65,7 +65,7 @@ div.highlight pre{
     padding: 10px;
     overflow: auto;
     -webkit-font-smoothing: antialiased;
-    font-family: 'Consolas', 'Inconsolata';
+    font-family: 'Consolas','Inconsolata','Source Code Pro',monospace;
 }
 
 .simple-footnotes{
