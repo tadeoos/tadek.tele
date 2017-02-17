@@ -147,9 +147,9 @@
 &lt;p&gt;On Tuesday I posted my question on &lt;a href="https://mathoverflow.net/"&gt;mathoverflow&lt;/a&gt;. Since this site is dedicated to professional mathematicians I was a bit worried that my problem would be considered as spam there. But, as it turned out there is also &lt;a href="http://math.stackexchange.com/"&gt;a place for the profaners&lt;/a&gt; where my question has been migrated thanks to caring and helpful admins.&lt;/p&gt;
 &lt;p&gt;Couple of hours later I had my answer (thanks again Kevin Long, whoever you are). &lt;/p&gt;
 &lt;p&gt;&lt;audio id=drum&gt;
-&lt;source src="images/drum.wav" type="audio/wav"&gt;
+&lt;source type="audio/wav" src="images/drum.wav"&gt;
 &lt;/audio&gt;
-&lt;/p&gt;&lt;p id=hov style="text-align: center; margin: 20px 0px; line-height: 3rem;"&gt;Are you ready?&lt;br&gt;The formula we were looking for is...&lt;br&gt;&lt;a href=#drumroll id=drumroll&gt;drumroll, please&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;
+&lt;/p&gt;&lt;p id=hov style="text-align: center; margin: 20px 0px; line-height: 3rem;"&gt;Are you ready?&lt;br&gt;The formula we were looking for is...&lt;br&gt;&lt;a id=drumroll href=#drumroll&gt;drumroll, please&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;
 &lt;div class=math&gt;$$f(n,x,y)=1-\sum_{i=1}^{n-y} (-1)^{i-1}{n\choose i}\bigg(\frac{{n-i \choose y}y!(n-y)!}{n!}\bigg)^x$$&lt;/div&gt;
 &lt;p&gt;Whoa! This beauty is as magnificent as it is scary. But bear with me, we're gonna go through it step by step.&lt;/p&gt;
 &lt;p&gt;As it turns out, &lt;strong&gt;the proper way to approach this problem was to do it backwards i.e. to count the scenarios where we &lt;em&gt;didn't&lt;/em&gt; get all elements of the initial set.&lt;/strong&gt;&lt;/p&gt;
