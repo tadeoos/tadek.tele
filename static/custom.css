@@ -68,13 +68,14 @@ div.highlight pre{
     font-family: 'Consolas','Inconsolata','Source Code Pro',monospace;
 }
 
-.simple-footnotes{
-    font-size: smaller;
+ol.simple-footnotes{
+  margin-bottom: 80px;  
 }
 
 ol.simple-footnotes li{
     line-height: 1.6em;
     margin-bottom: 10px;
+    font-size: smaller;
 }
 
 iframe:hover {
