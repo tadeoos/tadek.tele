@@ -24,21 +24,24 @@
 
 
 <meta name="author" content="Tadek Teleżyński" />
-<meta name="description" content="Pod koniec Tego, co dobre już we mnie nie było Na wierzchu Nie było radości, ciekawości, bliskości, pożądania Nie było tego Na wierzchu Pod koniec jeszcze tylko i nagle Taka litość przerażająca Dla tych małych nóżek niosących jakby nigdy nic niezłomną głowę i serce milczące jak urzędniczka za ladą. Serce jak wszystkie kraje, w których mnie nigdy nie było. Pod koniec Tego, co dobre już we mnie nie było Na wierzchu Był żal, obojętność, lęk i zmęczenie. Na wierzchu I chłód, taki że ci z ciała zostawia tylko pępek. Na wierzchu na wierzchu na wierzchu 09.2015" />
-<meta name="keywords" content="">
+<meta name="description" content="Around a year ago I got creative with one of homework assignments from a Linguistic Engineeirng course I was taking and developed a simple text generator who recently became the Epygone, which you can now play with yourself here. I plan on doing two part series on this project. First one, which you are currently reading, is more general and describes the way in which Epygone imitates different books. The second one (currently in writing) is going to be more technical and dive a bit into NLTK, Flask and probably some deployment stuff like Docker and Ansible. How does it work? Lets start with a bulletpoint overview and discuss the details later. Epygone starts by consuming a .txt file, (ideally less than 500 kilobytes in size). He then generates a conditional frequency distribution based on text's trigrams. What it means is that he can now obtain an information that after …" />
+<meta name="keywords" content="python, nltk, web">
 <meta property="og:site_name" content="Kubona"/>
-<meta property="og:title" content="***"/>
-<meta property="og:description" content="Pod koniec Tego, co dobre już we mnie nie było Na wierzchu Nie było radości, ciekawości, bliskości, pożądania Nie było tego Na wierzchu Pod koniec jeszcze tylko i nagle Taka litość przerażająca Dla tych małych nóżek niosących jakby nigdy nic niezłomną głowę i serce milczące jak urzędniczka za ladą. Serce jak wszystkie kraje, w których mnie nigdy nie było. Pod koniec Tego, co dobre już we mnie nie było Na wierzchu Był żal, obojętność, lęk i zmęczenie. Na wierzchu I chłód, taki że ci z ciała zostawia tylko pępek. Na wierzchu na wierzchu na wierzchu 09.2015"/>
+<meta property="og:title" content="Introducing: epygone"/>
+<meta property="og:description" content="Around a year ago I got creative with one of homework assignments from a Linguistic Engineeirng course I was taking and developed a simple text generator who recently became the Epygone, which you can now play with yourself here. I plan on doing two part series on this project. First one, which you are currently reading, is more general and describes the way in which Epygone imitates different books. The second one (currently in writing) is going to be more technical and dive a bit into NLTK, Flask and probably some deployment stuff like Docker and Ansible. How does it work? Lets start with a bulletpoint overview and discuss the details later. Epygone starts by consuming a .txt file, (ideally less than 500 kilobytes in size). He then generates a conditional frequency distribution based on text's trigrams. What it means is that he can now obtain an information that after …"/>
 <meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="http://tadek.tele.com.pl/podkoniec-pl.html"/>
+<meta property="og:url" content="http://tadek.tele.com.pl/epygone-pt1.html"/>
 <meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2017-06-29 02:04:11+02:00"/>
+<meta property="article:published_time" content="2017-07-11 10:20:00+02:00"/>
 <meta property="article:modified_time" content=""/>
 <meta property="article:author" content="http://tadek.tele.com.pl/author/tadek-telezynski.html">
-<meta property="article:section" content="literature"/>
+<meta property="article:section" content="projects"/>
+<meta property="article:tag" content="python"/>
+<meta property="article:tag" content="nltk"/>
+<meta property="article:tag" content="web"/>
 <meta property="og:image" content="/images/initial.jpg">
 
-  <title>Kubona &ndash; ***</title>
+  <title>Kubona &ndash; Introducing: epygone</title>
 </head>
 <body>
 
@@ -52,14 +55,15 @@
 
       <nav>
         <ul class="list">
-          <li><a href="http://tadek.tele.com.pl/pages/about.html#about">About</a></li>
-          <li><a href="http://tadek.tele.com.pl/pages/fun-facts.html#fun-facts">Fun facts</a></li>
-          <li><a href="http://tadek.tele.com.pl/pages/links.html#links">Links</a></li>
-          <li><a href="http://tadek.tele.com.pl/pages/projects.html#projects">Projects</a></li>
-          <li><a href="http://tadek.tele.com.pl/pages/writings.html#writings">Writings</a></li>
+          <li><a href="http://tadek.tele.com.pl/pages/about.html">About</a></li>
+          <li><a href="http://tadek.tele.com.pl/pages/fun-facts.html">Fun facts</a></li>
+          <li><a href="http://tadek.tele.com.pl/pages/links.html">Links</a></li>
+          <li><a href="http://tadek.tele.com.pl/pages/projects.html">Projects</a></li>
+          <li><a href="http://tadek.tele.com.pl/pages/writings.html">Writings</a></li>
 
         </ul>
       </nav>
+
 
       <ul class="social">
         <li><a class="sc-github" href="http://github.com/tadeoos" target="_blank"><i class="fa fa-github"></i></a></li>
@@ -67,29 +71,32 @@
         <li><a class="sc-linkedin" href="https://www.linkedin.com/in/tadeusz-tele%C5%BCy%C5%84ski-b8b9239b" target="_blank"><i class="fa fa-linkedin"></i></a></li>
         <li><a class="sc-envelope-o" href="mailto:tadekte@gmail.com" target="_blank"><i class="fa fa-envelope-o"></i></a></li>
       </ul>
+
+      <nav>
+
+        <a class="btn" href="http://tadek.tele.com.pl">    HOME
+</a>
+
+        <a class="btn" href="/archives.html">ARCHIVES</a>
+        <a class="btn" href="/categories.html">CATEGORIES</a>
+        <a class="btn" href="/tags.html">TAGS</a>
+
+        <a class="btn" href="http://tadek.tele.com.pl/feeds/all.atom.xml">    ATOM
+</a>
+
+        <a class="btn" href="http://tadek.tele.com.pl/feeds/all.rss.xml">    RSS
+</a>
+      </nav>
+
     </div>
   </aside>
   <main>
-    <nav>
-      <a href="http://tadek.tele.com.pl">    Home
-</a>
-
-      <a href="/archives.html">Archives</a>
-      <a href="/categories.html">Categories</a>
-      <a href="/tags.html">Tags</a>
-
-      <a href="http://tadek.tele.com.pl/feeds/all.atom.xml">    Atom
-</a>
-
-      <a href="http://tadek.tele.com.pl/feeds/all.rss.xml">    RSS
-</a>
-    </nav>
 
 <article>
   <header>
-    <h1 id="podkoniec">***</h1>
+    <h1 id="epygone-pt1">Introducing: epygone</h1>
     <p>
-          Posted on Thu 29 June 2017 in <a href="http://tadek.tele.com.pl/category/literature.html">literature</a>
+          Posted on Tue 11 July 2017 in <a href="http://tadek.tele.com.pl/category/projects.html">projects</a>
 
 
         &#8226; 1 min read
@@ -98,28 +105,25 @@
     </p>
   </header>
   <div>
-    <p>Pod koniec<br>
-Tego, co dobre już we mnie nie było<br>
-Na wierzchu<br>
-Nie było radości, ciekawości, bliskości, pożądania<br>
-Nie było tego<br>
-Na wierzchu<br>
-Pod koniec jeszcze tylko i nagle<br>
-Taka litość przerażająca<br>
-Dla tych małych nóżek niosących jakby nigdy nic<br>
-niezłomną głowę i serce milczące jak urzędniczka za ladą.<br>
-Serce jak wszystkie kraje, w których mnie nigdy nie było.<br>
-Pod koniec<br>
-Tego, co dobre już we mnie nie było<br>
-Na wierzchu<br>
-Był żal, obojętność, lęk i zmęczenie.<br>
-Na wierzchu<br>
-I chłód, taki że ci z ciała zostawia tylko pępek.<br>
-Na wierzchu na wierzchu na wierzchu</p>
-<p style="text-align: center; font-style: italic; margin-top: 30px; font-size: small;">09.2015</p>
+    <!-- Status: draft -->
+
+<p>Around a year ago I got creative with one of homework assignments from a Linguistic Engineeirng course I was taking and developed a simple text generator who recently became the Epygone, which you can now play with yourself <a href="/epygone">here</a>. I plan on doing two part series on this project. First one, which you are currently reading, is more general and describes the way in which Epygone imitates different books. The second one (currently in writing) is going to be more technical and dive a bit into NLTK, Flask and probably some deployment stuff like Docker and Ansible. </p>
+<h4>How does it work?</h4>
+<p>Lets start with a bulletpoint overview and discuss the details later.
+<!-- I consider Epygone to be a very naive epigone. Here's why: --></p>
+<ol>
+<li>Epygone starts by consuming a <code>.txt</code> file, (ideally less than 500 kilobytes in size). </li>
+<li>He then generates a conditional frequency distribution based on text's trigrams. What it means is that he can now obtain an information that after the phrase f.g <em>it was</em> the word <em>nice</em> appeared 8 times, word <em>too</em> appeared 5 times etc.</li>
+<li>Next, he picks up one of the words that appeared after a dot and generates <em>n</em> sentences, word by word.</li>
+<li>The way he chooses a word is this: he randomly chooses one of the words that appeared after the current last two words of the generated text. Note that the chances for each word to be picked are scaled to the number of times this word appeared.</li>
+<li>That's it. Your text is ready. </li>
+</ol>
   </div>
   <!--<div class="tag-cloud">
     <p>
+      <a href="http://tadek.tele.com.pl/tag/python.html">python</a>
+      <a href="http://tadek.tele.com.pl/tag/nltk.html">nltk</a>
+      <a href="http://tadek.tele.com.pl/tag/web.html">web</a>
     </p>
   </div>-->
 

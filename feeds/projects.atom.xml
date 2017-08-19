@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Kubona - projects</title><link href="http://tadek.tele.com.pl/" rel="alternate"></link><link href="http://tadek.tele.com.pl/feeds/projects.atom.xml" rel="self"></link><id>http://tadek.tele.com.pl/</id><updated>2017-07-11T10:20:00+02:00</updated><entry><title>Introducing: epygone</title><link href="http://tadek.tele.com.pl/epygone-pt1.html" rel="alternate"></link><published>2017-07-11T10:20:00+02:00</published><updated>2017-07-11T10:20:00+02:00</updated><author><name>Tadek Teleżyński</name></author><id>tag:tadek.tele.com.pl,2017-07-11:/epygone-pt1.html</id><summary type="html">&lt;!-- Status: draft --&gt;
+
+&lt;p&gt;Around a year ago I got creative with one of homework assignments from a Linguistic Engineeirng course I was taking and developed a simple text generator who recently became the Epygone, which you can now play with yourself &lt;a href="/epygone"&gt;here&lt;/a&gt;. I plan on doing two part series on this project. First one, which you are currently reading, is more general and describes the way in which Epygone imitates different books. The second one (currently in writing) is going to be more technical and dive a bit into NLTK, Flask and probably some deployment stuff like Docker and Ansible. &lt;/p&gt;
+&lt;h4&gt;How does it work?&lt;/h4&gt;
+&lt;p&gt;Lets start with a bulletpoint overview and discuss the details later.
+&lt;!-- I consider Epygone to be a very naive epigone. Here's why: --&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Epygone starts by consuming a &lt;code&gt;.txt&lt;/code&gt; file, (ideally less than 500 kilobytes in size). &lt;/li&gt;
+&lt;li&gt;He then generates a conditional frequency distribution based on text's trigrams. What it means is that he can now obtain an information that after …&lt;/li&gt;&lt;/ol&gt;</summary><content type="html">&lt;!-- Status: draft --&gt;
+
+&lt;p&gt;Around a year ago I got creative with one of homework assignments from a Linguistic Engineeirng course I was taking and developed a simple text generator who recently became the Epygone, which you can now play with yourself &lt;a href="/epygone"&gt;here&lt;/a&gt;. I plan on doing two part series on this project. First one, which you are currently reading, is more general and describes the way in which Epygone imitates different books. The second one (currently in writing) is going to be more technical and dive a bit into NLTK, Flask and probably some deployment stuff like Docker and Ansible. &lt;/p&gt;
+&lt;h4&gt;How does it work?&lt;/h4&gt;
+&lt;p&gt;Lets start with a bulletpoint overview and discuss the details later.
+&lt;!-- I consider Epygone to be a very naive epigone. Here's why: --&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Epygone starts by consuming a &lt;code&gt;.txt&lt;/code&gt; file, (ideally less than 500 kilobytes in size). &lt;/li&gt;
+&lt;li&gt;He then generates a conditional frequency distribution based on text's trigrams. What it means is that he can now obtain an information that after the phrase f.g &lt;em&gt;it was&lt;/em&gt; the word &lt;em&gt;nice&lt;/em&gt; appeared 8 times, word &lt;em&gt;too&lt;/em&gt; appeared 5 times etc.&lt;/li&gt;
+&lt;li&gt;Next, he picks up one of the words that appeared after a dot and generates &lt;em&gt;n&lt;/em&gt; sentences, word by word.&lt;/li&gt;
+&lt;li&gt;The way he chooses a word is this: he randomly chooses one of the words that appeared after the current last two words of the generated text. Note that the chances for each word to be picked are scaled to the number of times this word appeared.&lt;/li&gt;
+&lt;li&gt;That's it. Your text is ready. &lt;/li&gt;
+&lt;/ol&gt;</content><category term="python"></category><category term="nltk"></category><category term="web"></category></entry></feed>
