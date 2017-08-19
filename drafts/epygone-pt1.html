@@ -30,7 +30,7 @@
 <meta property="og:title" content="Introducing: epygone"/>
 <meta property="og:description" content="Around a year ago I got creative with one of homework assignments from a Linguistic Engineeirng course I was taking and developed a simple text generator who recently became the Epygone, which you can now play with yourself here. I plan on doing two part series on this project. First one, which you are currently reading, is more general and describes the way in which Epygone imitates different books. The second one (currently in writing) is going to be more technical and dive a bit into NLTK, Flask and probably some deployment stuff like Docker and Ansible. How does it work? Lets start with a bulletpoint overview and discuss the details later. Epygone starts by consuming a .txt file, (ideally less than 500 kilobytes in size). He then generates a conditional frequency distribution based on text's trigrams. What it means is that he can now obtain an information that after …"/>
 <meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="http://tadek.tele.com.pl/epygone-pt1.html"/>
+<meta property="og:url" content="http://tadek.tele.com.pl/drafts/epygone-pt1.html"/>
 <meta property="og:type" content="article"/>
 <meta property="article:published_time" content="2017-07-11 10:20:00+02:00"/>
 <meta property="article:modified_time" content=""/>
@@ -105,18 +105,16 @@
     </p>
   </header>
   <div>
-    <!-- Status: draft -->
-
-<p>Around a year ago I got creative with one of homework assignments from a Linguistic Engineeirng course I was taking and developed a simple text generator who recently became the Epygone, which you can now play with yourself <a href="/epygone">here</a>. I plan on doing two part series on this project. First one, which you are currently reading, is more general and describes the way in which Epygone imitates different books. The second one (currently in writing) is going to be more technical and dive a bit into NLTK, Flask and probably some deployment stuff like Docker and Ansible. </p>
+    <p>Around a year ago I got creative with one of homework assignments from a Linguistic Engineeirng course I was taking and developed a simple text generator who recently became the Epygone, which you can now play with yourself <a href="/epygone">here</a>. I plan on doing two part series on this project. First one, which you are currently reading, is more general and describes the way in which Epygone imitates different books. The second one (currently in writing) is going to be more technical and dive a bit into NLTK, Flask and probably some deployment stuff like Docker and Ansible.</p>
 <h4>How does it work?</h4>
 <p>Lets start with a bulletpoint overview and discuss the details later.
 <!-- I consider Epygone to be a very naive epigone. Here's why: --></p>
 <ol>
-<li>Epygone starts by consuming a <code>.txt</code> file, (ideally less than 500 kilobytes in size). </li>
+<li>Epygone starts by consuming a <code>.txt</code> file, (ideally less than 500 kilobytes in size).</li>
 <li>He then generates a conditional frequency distribution based on text's trigrams. What it means is that he can now obtain an information that after the phrase f.g <em>it was</em> the word <em>nice</em> appeared 8 times, word <em>too</em> appeared 5 times etc.</li>
 <li>Next, he picks up one of the words that appeared after a dot and generates <em>n</em> sentences, word by word.</li>
 <li>The way he chooses a word is this: he randomly chooses one of the words that appeared after the current last two words of the generated text. Note that the chances for each word to be picked are scaled to the number of times this word appeared.</li>
-<li>That's it. Your text is ready. </li>
+<li>That's it. Your text is ready.</li>
 </ol>
   </div>
   <!--<div class="tag-cloud">
