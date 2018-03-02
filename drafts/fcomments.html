@@ -1,0 +1,710 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" type="text/css" href="../theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="../theme/pygments/nafiul.min.css">
+  <link rel="stylesheet" type="text/css" href="../theme/font-awesome/css/font-awesome.min.css">
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>  -->
+    <link href="../static/custom.css" rel="stylesheet">
+
+    <link href="https://tadek.tele.com.pl/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Kubona Atom">
+
+    <link href="https://tadek.tele.com.pl/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Kubona RSS">
+
+
+    <link href="https://fonts.googleapis.com/css?family=Alegreya" rel="stylesheet">
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+
+<meta name="author" content="Tadek Teleżyński" />
+<meta name="description" content="Introduction Couple of weeks ago at work, I was working on a Django project I maintain and I run into migration issues when trying to run test suite. The problem was caused by custom migrations which first loaded and then deleted a bunch of fixtures. This operation caused a Postgres database to close it's connection thus throwing an error during the creation of the test database replica. This migration was completely orthogonal to my tests and I was in a bit of a hurry, so I quickly became a proponent of a simple workaround: commenting code inside the operations list, causing migration to simply pass silently. This workaround had a major issue, namely having to change the two migration files before and after running the test suite. That's when an idea for a simple cli tool that could help me with this particular provisioning need first came to life. In …" />
+<meta name="keywords" content="python, cli, pypi">
+<meta property="og:site_name" content="Kubona"/>
+<meta property="og:title" content="fcomments"/>
+<meta property="og:description" content="Introduction Couple of weeks ago at work, I was working on a Django project I maintain and I run into migration issues when trying to run test suite. The problem was caused by custom migrations which first loaded and then deleted a bunch of fixtures. This operation caused a Postgres database to close it's connection thus throwing an error during the creation of the test database replica. This migration was completely orthogonal to my tests and I was in a bit of a hurry, so I quickly became a proponent of a simple workaround: commenting code inside the operations list, causing migration to simply pass silently. This workaround had a major issue, namely having to change the two migration files before and after running the test suite. That's when an idea for a simple cli tool that could help me with this particular provisioning need first came to life. In …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="../drafts/fcomments.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2017-09-09 21:49:00+02:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="../author/tadek-telezynski.html">
+<meta property="article:section" content="projects"/>
+<meta property="article:tag" content="python"/>
+<meta property="article:tag" content="cli"/>
+<meta property="article:tag" content="pypi"/>
+<meta property="og:image" content="/images/initial.jpg">
+
+  <title>Kubona &ndash; fcomments</title>
+</head>
+<body>
+
+  <aside>
+    <div>
+      <a href="..">
+        <img src="/images/initial.jpg" alt="" title="">
+      </a>
+      <h1><a href=".."></a></h1>
+
+
+      <nav>
+        <ul class="list">
+          <li><a href="../pages/about.html">About</a></li>
+          <li><a href="../pages/fun-facts.html">Fun facts</a></li>
+          <li><a href="../pages/links.html">Links</a></li>
+          <li><a href="../pages/projects.html">Projects</a></li>
+          <li><a href="../pages/writings.html">Writings</a></li>
+
+        </ul>
+      </nav>
+
+
+      <ul class="social">
+        <li><a class="sc-github" href="http://github.com/tadeoos" target="_blank"><i class="fa fa-github"></i></a></li>
+        <li><a class="sc-twitter" href="http://twitter.com/tdkte" target="_blank"><i class="fa fa-twitter"></i></a></li>
+        <li><a class="sc-linkedin" href="https://www.linkedin.com/in/tadeusz-tele%C5%BCy%C5%84ski-b8b9239b" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+        <li><a class="sc-envelope-o" href="mailto:tadekte@gmail.com" target="_blank"><i class="fa fa-envelope-o"></i></a></li>
+        <li><a class="sc-rss" href="/feeds/all.rss.xml" target="_blank"><i class="fa fa-rss"></i></a></li>
+      </ul>
+
+      <nav>
+
+        <a class="btn" href="..">    HOME
+</a>
+
+        <a class="btn" href="/archives.html">ARCHIVES</a>
+        <a class="btn" href="/categories.html">CATEGORIES</a>
+        <a class="btn" href="/tags.html">TAGS</a>
+
+        <!--         <a class="btn" href="https://tadek.tele.com.pl/feeds/all.atom.xml">    ATOM
+</a>
+
+        <a class="btn" href="https://tadek.tele.com.pl/feeds/all.rss.xml">    RSS
+</a>
+      </nav> -->
+
+    </div>
+  </aside>
+  <main>
+
+<article>
+  <header>
+    <h1 id="fcomments">fcomments</h1>
+    <p>
+          Posted on Sat 09 September 2017 in <a href="../category/projects.html">projects</a>
+
+
+        &#8226; 8 min read
+      <!--<br>
+      <button type="button" class="button" id="wlacz">Link Preview</button>-->
+    </p>
+  </header>
+  <div class="col-lg-3 hidden-xs hidden-sm">
+      <h3>Contents</h3>
+      <div id="toc"><ul><li><a class="toc-href" href="#introduction" title="Introduction">Introduction</a></li><li><a class="toc-href" href="#project-structure" title="Project structure">Project structure</a><ul><li><a class="toc-href" href="#setup" title="setup">setup</a></li><li><a class="toc-href" href="#python-in-the-project" title="Python in the project">Python in the project</a><ul><li><a class="toc-href" href="#keeping-your-code-clean" title="keeping your code clean">keeping your code clean</a></li><li><a class="toc-href" href="#smoothing" title="smoothing">smoothing</a></li><li><a class="toc-href" href="#preparing-for-tests" title="preparing for tests">preparing for tests</a></li><li><a class="toc-href" href="#travisci" title="TravisCI">TravisCI</a></li><li><a class="toc-href" href="#flit" title="flit">flit</a></li></ul></li></ul></li><li><a class="toc-href" href="#code_2" title="Code">Code</a><ul><li><a class="toc-href" href="#commentator-class" title="Commentator class">Commentator class</a></li><li><a class="toc-href" href="#turning-our-class-into-cli-tool" title="Turning our class into CLI tool">Turning our class into CLI tool</a></li><li><a class="toc-href" href="#tests" title="Tests">Tests</a></li></ul></li></ul></div>
+  </div>
+  <div>
+    <h2 id="introduction">Introduction</h2>
+<p>Couple of weeks ago at work, I was working on a Django project I maintain and I run into migration issues when trying to run test suite.</p>
+<p>The problem was caused by custom migrations which first loaded and then deleted
+a bunch of fixtures. This operation caused a Postgres database to close it's connection
+thus throwing an error during the creation of the test database replica.</p>
+<p>This migration was completely orthogonal to my tests and I was in a bit of a hurry,
+so I quickly became a proponent of a simple workaround: commenting code inside
+the <code>operations</code> list, causing migration to simply pass silently.</p>
+<p>This workaround had a major issue, namely having to change the two migration files
+before and after running the test suite. That's when an idea for a simple cli tool
+that could help me with this particular provisioning need first came to life.</p>
+<p>In this post I'm gonna cover a code of a simple cli tool to manage comments in
+python files.</p>
+<p>We're gonna also look at:</p>
+<ul>
+<li>an easy process of publishing your code to <a href="https://pypi.org/">PyPi</a></li>
+<li>some other tools useful for enhancing pythonic development experience:<ul>
+<li>flake8</li>
+<li>coverage</li>
+<li>TravisCI</li>
+<li>direnv</li>
+</ul>
+</li>
+</ul>
+<p>What is assumed:</p>
+<ul>
+<li>Ability to handle <a href="http://docs.python-guide.org/en/latest/dev/virtualenvs/">virtual environment</a>.</li>
+<li><a href="https://github.com">GitHub</a> account (not crucial, but we're gonna play with <a href="https://travis-ci.org/">Travis</a>)</li>
+</ul>
+<p>You can find original project repository <a href="https://github.com/tadeoos/fcomments">here</a>.</p>
+<h2 id="project-structure">Project structure</h2>
+<h3 id="setup">setup</h3>
+<p>Let's start with simple <code>git init</code>.</p>
+<p>This is how our root project directory will look like:</p>
+<div class="highlight"><pre><span></span>fcomments
+├── fcomments
+│&nbsp;&nbsp; ├── __init__.py
+│&nbsp;&nbsp; ├── __main__.py
+│&nbsp;&nbsp; ├── fcomments.py
+├── tests
+│&nbsp;&nbsp; ├── __init__.py
+│&nbsp;&nbsp; ├── ex_file.py
+│&nbsp;&nbsp; └── tests.py
+├── .envrc
+├── .gitignore
+├── .travis.yml
+├── README.md
+├── flit.ini
+├── LICENSE.md
+├── requirements.txt
+├── setup.cfg
+└── test.sh
+</pre></div>
+<h3 id="python-in-the-project">Python in the project</h3>
+<div class="highlight"><pre><span></span>$ conda create -n fcomments <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.6  <span class="c1"># setup your virtualenv, I'm using conda</span>
+$ pip install -r requirements.txt  <span class="c1"># our requirements are coverage, flake8 &amp; flit</span>
+</pre></div>
+<p>Next, let's add some sensible defaults to <code>.gitignore</code> file:</p>
+<div class="highlight"><pre><span></span><span class="c1"># .gitignore</span>
+
+__pycache__
+dist
+htmlcov
+.coverage
+*.orig
+.env*
+</pre></div>
+<h4 id="keeping-your-code-clean">keeping your code clean</h4>
+<p>It's a very good practice to enforce upon oneself a good code style guidelines. I like to use <a href="https://gitlab.com/pycqa/flake8">flake8</a> for this. You can keep flake's configuration in <code>setup.cfg</code> file.</p>
+<div class="highlight"><pre><span></span><span class="c1"># setup.cfg</span>
+
+<span class="k">[flake8]</span>
+<span class="na">max-line-length</span> <span class="o">=</span> <span class="s">110</span>
+<span class="na">exclude</span> <span class="o">=</span> <span class="s">ex_file.py,dist</span>
+<span class="na">ignore</span> <span class="o">=</span> <span class="s">D10</span>
+<span class="na">count</span> <span class="o">=</span> <span class="s">True</span>
+<span class="na">show-source</span> <span class="o">=</span> <span class="s">True</span>
+<span class="na">statistics</span> <span class="o">=</span> <span class="s">True</span>
+<span class="na">max-complexity</span> <span class="o">=</span> <span class="s">10</span>
+</pre></div>
+<p>As you can see flake8 comes in with many cool configuration options. For example <code>statistics</code> will print out a nice overview of the types of errors you made. The <code>max-complexity</code> option is based on <a href="https://en.wikipedia.org/wiki/Cyclomatic_complexity">cyclomatic complexity metric</a>. While specyfing errors to ignore in the <code>ignore</code> option you can specify first two digits to catch all the errors from the group. You can see the complete list of options <a href="http://flake8.pycqa.org/en/latest/user/options.html">here</a>.</p>
+<h4 id="smoothing">smoothing</h4>
+<p>I recently came accross <a href="https://github.com/direnv/direnv">direnv</a> which is a great tool for making a coding process smooth as silk.</p>
+<h4 id="preparing-for-tests">preparing for tests</h4>
+<p>I like to keep a simple shell script to cover all my <em>build-like</em>  actions:</p>
+<div class="highlight"><pre><span></span><span class="c1"># test.sh</span>
+
+<span class="c1">#!/usr/bin/env bash</span>
+flake8 .
+coverage run -m unittest
+coverage html
+</pre></div>
+<p>First statement will run linting starting in our root directory (see the <code>exclude</code>
+option if you want flake8 to skip specific files). The second one will run our
+testsuit with standard unittest module autodiscovery, but the catch is it'll
+also measure the percantege of our codebase that is being run by these tests.
+The last command generates the html report of the coverage's findings. After running this command the <code>htmlcov</code> directory will appear at the root of your project. Inside
+you will find a bunch of <code>.html</code> and <code>.js</code> files from which you should be only interested in
+<code>index.html</code>. Open it in your browser and see the magic of coverage html report with your own eyes :)</p>
+<h4 id="travisci">TravisCI</h4>
+<p>From Travis' <a href="https://docs.travis-ci.com/user/for-beginners">docs</a>:</p>
+<blockquote>
+<p>Continuous Integration is the practice of merging in small code changes frequently - rather than merging in a large change at the end of a development cycle. The goal is to build healthier software by developing and testing in smaller increments. This is where Travis CI comes in.</p>
+<p>As a continuous integration platform, Travis CI supports your development process by automatically building and testing code changes, providing immediate feedback on the success of the change. Travis CI can also automate other parts of your development process by managing deployments and notifications.</p>
+</blockquote>
+<p>Here is a very simple python configuration, it runs flake8 for linting and then runs testsuite. You could easily call your custom <code>deploy.sh</code> script in this section.</p>
+<div class="highlight"><pre><span></span><span class="c1"># .travis.yml</span>
+
+<span class="nn">---</span>
+<span class="l l-Scalar l-Scalar-Plain">language</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">python</span>
+<span class="l l-Scalar l-Scalar-Plain">python</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="s">"3.6"</span>
+  <span class="p p-Indicator">-</span> <span class="s">"3.5"</span>
+<span class="l l-Scalar l-Scalar-Plain">install</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">pip install flake8</span>
+<span class="l l-Scalar l-Scalar-Plain">before_script</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">flake8 .</span>
+<span class="l l-Scalar l-Scalar-Plain">script</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">python -m unittest</span>
+</pre></div>
+<p>Check out more about Travis in their <a href="https://docs.travis-ci.com/user/getting-started/">docs</a>.</p>
+<h4 id="flit">flit</h4>
+<p><a href="https://github.com/takluyver/flit">Flit</a> is a great tool aimed at making your life easier when dealing with deploying your package to PyPi.</p>
+<div class="highlight"><pre><span></span><span class="c1"># flit.ini</span>
+
+<span class="k">[metadata]</span>
+<span class="na">module</span><span class="o">=</span><span class="s">fcomments</span>
+<span class="na">author</span><span class="o">=</span><span class="s">Tadek Teleżyński</span>
+<span class="na">author-email</span><span class="o">=</span><span class="s">tadekte@gmail.com</span>
+<span class="na">home-page</span><span class="o">=</span><span class="s">https://github.com/tadeoos/fcomments</span>
+<span class="na">description-file</span><span class="o">=</span><span class="s">README.md</span>
+<span class="na">requires-python</span><span class="o">=</span> <span class="s">&gt;=3.5</span>
+<span class="na">keywords</span><span class="o">=</span><span class="s">comments file</span>
+<span class="na">classifiers</span> <span class="o">=</span> <span class="s">Development Status :: 3 - Alpha</span>
+<span class="s">    Programming Language :: Python :: 3</span>
+<span class="s">    Programming Language :: Python :: 3.5</span>
+<span class="s">    Programming Language :: Python :: 3.6</span>
+<span class="s">    Environment :: Console</span>
+<span class="s">    License :: OSI Approved :: MIT License</span>
+<span class="s">    Intended Audience :: Developers</span>
+<span class="s">    Topic :: Software Development :: Pre-processors</span>
+<span class="s">    Topic :: Text Processing :: General</span>
+<span class="s">    Topic :: Utilities</span>
+
+<span class="k">[scripts]</span>
+<span class="na">fcomments</span> <span class="o">=</span> <span class="s">fcomments:main</span>
+</pre></div>
+<p>Edit your <code>~/.pypirc</code>:</p>
+<div class="highlight"><pre><span></span><span class="k">[distutils]</span>
+<span class="na">index-servers</span> <span class="o">=</span><span class="s"></span>
+<span class="s">    pypi</span>
+
+<span class="k">[pypi]</span>
+<span class="na">username:&lt;your_PyPI_username&gt;</span>
+<span class="na">password:&lt;your_PyPI_password&gt;</span>
+</pre></div>
+<div class="highlight"><pre><span></span>$ flit publish
+</pre></div>
+<p>I'm not gonna cover <code>README.md</code> and <code>LICENSE.md</code>. If you need help with the latter, check out <a href="https://choosealicense.com/">latest github effort</a>.</p>
+<h2 id="code_2">Code</h2>
+<h3 id="commentator-class">Commentator class</h3>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+
+<span class="k">class</span> <span class="nc">Commenter</span><span class="p">:</span>
+    <span class="sd">"""Comment or uncomment lines in file."""</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="s1">''</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">all_lines</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uncomment</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comment</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_pattern</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_pattern</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comment_symbol</span> <span class="o">=</span> <span class="s1">'#'</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">original</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">f</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_reverse</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_lines</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+</pre></div>
+<div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">_update_reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comment</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">uncomment</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_updates</span><span class="p">():</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">'output'</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s1">'comment_symbol'</span><span class="p">:</span> <span class="s1">'#'</span><span class="p">,</span> <span class="s1">'lines'</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+                <span class="s1">'comment'</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s1">'all_lines'</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s1">'uncomment'</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+                <span class="s1">'in_pattern'</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s1">'out_pattern'</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s1">'reverse'</span><span class="p">:</span> <span class="bp">True</span><span class="p">}</span>
+</pre></div>
+<div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">save_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">original</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">f</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="s1">''</span>
+</pre></div>
+<div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">comment_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commit</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">all_lines</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'all_lines'</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">original</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'original'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">all_lines</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">original</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">'lines'</span><span class="p">:</span> <span class="n">lines</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'lines'</span><span class="p">,</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">line_based</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pattern_based</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">commit</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_file</span><span class="p">()</span>
+</pre></div>
+<div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">handle_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="n">is_comment</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">'\s*'</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">comment_symbol</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">reverse</span><span class="p">:</span>
+            <span class="n">comment</span> <span class="o">=</span> <span class="bp">False</span> <span class="k">if</span> <span class="n">is_comment</span> <span class="k">else</span> <span class="bp">True</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="p">(</span><span class="n">comment</span> <span class="ow">or</span> <span class="n">is_comment</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">line</span>
+
+        <span class="k">if</span> <span class="n">comment</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_comment</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s1">'Warning: line already commented'</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">line</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">comment_symbol</span> <span class="o">+</span> <span class="n">line</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">is_comment</span>
+            <span class="k">return</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+</pre></div>
+<div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">line_based</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">original</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">comment</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">res_file</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">original</span><span class="p">:</span>
+            <span class="n">original</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">original</span>
+        <span class="k">assert</span> <span class="n">lines</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">original</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">reverse</span><span class="p">)</span>
+            <span class="n">res_file</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">res_file</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">pattern_based</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_pattern</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">out_pattern</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">original</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">start_pattern</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">end_pattern</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">res_file</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">original</span><span class="p">:</span>
+            <span class="n">original</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">original</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">original</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">start_pattern</span> <span class="ow">and</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">out_pattern</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+                <span class="n">end_pattern</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="n">start_pattern</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">if</span> <span class="n">start_pattern</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">reverse</span><span class="p">)</span>
+            <span class="n">res_file</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">end_pattern</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">in_pattern</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+                <span class="n">start_pattern</span> <span class="o">=</span> <span class="bp">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">res_file</span><span class="p">)</span>
+</pre></div>
+<h3 id="turning-our-class-into-cli-tool">Turning our class into CLI tool</h3>
+<p>Python comes with an <a href="https://docs.python.org/3.6/library/optparse.html"><code>optparse</code></a> module in the standard library.</p>
+<div class="highlight"><pre><span></span><span class="sd">"""Script for commenting in/out lines in file."""</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">optparse</span> <span class="kn">import</span> <span class="n">OptionParser</span>
+
+<span class="kn">from</span> <span class="nn">.commenter</span> <span class="kn">import</span> <span class="n">Commenter</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s1">'0.1.3'</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_parser</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">line_callback</span><span class="p">(</span><span class="n">option</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">'-'</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+            <span class="n">lin</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'-'</span><span class="p">)]</span>
+            <span class="k">assert</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lin</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">lin</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">*</span><span class="n">lin</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">)]</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="bp">None</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="n">lines</span>
+
+    <span class="n">usage</span> <span class="o">=</span> <span class="s2">"""usage: %prog [options] &lt;path&gt;</span>
+
+<span class="s2">Examples:</span>
+<span class="s2">       %prog -h                  ---&gt;  see help</span>
+<span class="s2">       %prog -cl1,2 path/to/file  ---&gt;  comment out lines 1 and 2</span>
+<span class="s2">       %prog -ul3-6 path/to/file  ---&gt;  uncomment lines 3 to 6 (inclusive)</span>
+<span class="s2">       %prog -ac path/to/file     ---&gt;  comment out all lines</span>
+<span class="s2">       %prog -au path/to/file     ---&gt;  uncomment all lines</span>
+
+<span class="s2">       %prog --start-pattern='\s+operations\s?=\s?\[' --end-pattern='\s+\]' path/to/file</span>
+<span class="s2">         ---&gt;  comment out everything inside the `operations` list:</span>
+
+<span class="s2">         1| class Migration(...):</span>
+<span class="s2">         2|</span>
+<span class="s2">         3|     operations = [</span>
+<span class="s2">         4| #       migrations(</span>
+<span class="s2">         5| #           ...</span>
+<span class="s2">         6| #       ),</span>
+<span class="s2">         7|     ]</span>
+<span class="s2">"""</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s2">"""  Comment or uncomment lines in a file. Default</span>
+<span class="s2">behavior: do the oposite i.e. if a line is commented - uncomment it, and vice versa.</span>
+<span class="s2">To make sure that the matched lines will be [un]commented out - run with -[u]c option.</span>
+<span class="s2">If you don't specify an --output, the original file (&lt;path&gt;) will be overwritten.</span>
+<span class="s2">"""</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">OptionParser</span><span class="p">(</span><span class="n">usage</span><span class="o">=</span><span class="n">usage</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">"-c"</span><span class="p">,</span> <span class="s2">"--comment"</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"store_true"</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">"comment"</span><span class="p">,</span>
+                      <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"comment lines [default: False]"</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">"-u"</span><span class="p">,</span> <span class="s2">"--uncomment"</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"store_true"</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">"uncomment"</span><span class="p">,</span>
+                      <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"uncomment lines [default: False]"</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">"-a"</span><span class="p">,</span> <span class="s2">"--all"</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"store_true"</span><span class="p">,</span>
+                      <span class="n">dest</span><span class="o">=</span><span class="s2">"all_lines"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s2">"apply to all lines in file; suppresses -l option [default: False]"</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">"-l"</span><span class="p">,</span> <span class="s2">"--lines"</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"callback"</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">"string"</span><span class="p">,</span>
+                      <span class="n">dest</span><span class="o">=</span><span class="s2">"lines"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">line_callback</span><span class="p">,</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s2">"comma separeted string of line numbers [default: None]"</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">"-s"</span><span class="p">,</span> <span class="s2">"--start-pattern"</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"store"</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">"string"</span><span class="p">,</span>
+                      <span class="n">dest</span><span class="o">=</span><span class="s2">"in_pattern"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s2">"pattern to match against the line before commented section [default: None]"</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">"-e"</span><span class="p">,</span> <span class="s2">"--end-pattern"</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"store"</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">"string"</span><span class="p">,</span>
+                      <span class="n">dest</span><span class="o">=</span><span class="s2">"out_pattern"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s2">"pattern to match against the first line after commented section [default: None]"</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">"-o"</span><span class="p">,</span> <span class="s2">"--output"</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"store"</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">"string"</span><span class="p">,</span>
+                      <span class="n">dest</span><span class="o">=</span><span class="s2">"output"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s2">"specify a path to output file [default: None]"</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">"--symbol"</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"store"</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">"string"</span><span class="p">,</span>
+                      <span class="n">dest</span><span class="o">=</span><span class="s2">"comment_symbol"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">'#'</span><span class="p">,</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s2">"specify a string to use as comment [default: '#']"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">parser</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="sd">"""Script for commenting in/out lines in file."""</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">create_parser</span><span class="p">()</span>
+    <span class="n">options</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"specify a path to file"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">comment</span> <span class="ow">and</span> <span class="n">options</span><span class="o">.</span><span class="n">uncomment</span><span class="p">:</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">'cannot run with both -c and -u set to True'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">in_pattern</span> <span class="ow">or</span> <span class="n">options</span><span class="o">.</span><span class="n">out_pattern</span> <span class="ow">or</span> <span class="n">options</span><span class="o">.</span><span class="n">lines</span> <span class="ow">or</span> <span class="n">options</span><span class="o">.</span><span class="n">all_lines</span><span class="p">):</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">'specify patterns or lines; see --help'</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">commenter</span> <span class="o">=</span> <span class="n">Commenter</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">commenter</span><span class="o">.</span><span class="n">comment_file</span><span class="p">(</span><span class="o">**</span><span class="n">options</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</pre></div>
+<h3 id="tests">Tests</h3>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># import subprocess</span>
+
+<span class="kn">from</span> <span class="nn">fcomments.commenter</span> <span class="kn">import</span> <span class="n">Commenter</span>
+<span class="kn">from</span> <span class="nn">fcomments</span> <span class="kn">import</span> <span class="n">create_parser</span>
+
+<span class="n">dir_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+<span class="n">TEST_FILE_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_path</span><span class="p">,</span> <span class="s1">'ex_file.py'</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">is_commented</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">comm_state</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">comment_symbol</span><span class="o">=</span><span class="s1">'#'</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">comment_symbol</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">comm_state</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="n">comm_state</span>
+
+
+<span class="k">def</span> <span class="nf">file_check</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">comm_state</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">TEST_FILE_PATH</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">test_file</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">test_file</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">is_commented</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">comm_state</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="bp">False</span>
+            <span class="k">elif</span> <span class="n">strict</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">is_commented</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">comm_state</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+
+<span class="k">class</span> <span class="nc">fCommentsTestCase</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">fCommentsTestCase</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">TEST_FILE_PATH</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">def_dic</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'output'</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s1">'comment_symbol'</span><span class="p">:</span> <span class="s1">'#'</span><span class="p">,</span> <span class="s1">'lines'</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+                        <span class="s1">'comment'</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s1">'all_lines'</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s1">'uncomment'</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+                        <span class="s1">'in_pattern'</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s1">'out_pattern'</span><span class="p">:</span> <span class="bp">None</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmnter</span> <span class="o">=</span> <span class="n">Commenter</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">run_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atrs</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">assrt</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="n">newcm</span> <span class="o">=</span> <span class="n">Commenter</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">newcm</span><span class="o">.</span><span class="n">comment_file</span><span class="p">(</span><span class="o">**</span><span class="n">atrs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">assrt</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">file_check</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="n">lines</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">newcm</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">file_check</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="n">lines</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">newcm</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">atrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'uncomment'</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s1">'all_lines'</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                <span class="s1">'path'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">'reverse'</span><span class="p">:</span> <span class="bp">False</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">atrs</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">assrt</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">atrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'comment'</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s1">'lines'</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="s1">'path'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">'reverse'</span><span class="p">:</span> <span class="bp">False</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">atrs</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">assrt</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">ScriptTest</span><span class="p">(</span><span class="n">fCommentsTestCase</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">test_manual</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># main()</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">create_parser</span><span class="p">()</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="s1">'-l 1-5'</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="s1">'-l 1,2,5'</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIsNotNone</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
+        <span class="c1"># subprocess.call(["python", "-m", "fcomments", TEST_FILE_PATH, "-l1"])</span>
+
+    <span class="k">def</span> <span class="nf">test_infile_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""Test usage with one Class instatiation and atribs manipulation."""</span>
+        <span class="n">lin</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">11</span><span class="p">)]</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">Commenter</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">TEST_FILE_PATH</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">comment_file</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="n">lin</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">file_check</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="n">lin</span><span class="p">,</span> <span class="n">comm_state</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>  <span class="c1"># lines 4-11 are commented</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">comment_file</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="n">lin</span><span class="p">,</span> <span class="n">uncomments</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">result</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+        <span class="c1"># lines 4-11 are still commented because original not updated</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">file_check</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="n">lin</span><span class="p">,</span> <span class="n">comm_state</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">reverse</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">comment_file</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">file_check</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="n">lin</span><span class="p">,</span> <span class="n">comm_state</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>  <span class="c1"># nothing changed, -u</span>
+
+    <span class="k">def</span> <span class="nf">test_valid_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">Commenter</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">TEST_FILE_PATH</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">comment_file</span><span class="p">(</span><span class="n">comment</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">file_check</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="n">comm_state</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>  <span class="c1"># nothing changed, -u</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">comment_file</span><span class="p">(</span><span class="n">uncomment</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">file_check</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="n">comm_state</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">file_check</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="n">comm_state</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">CommenterTests</span><span class="p">(</span><span class="n">fCommentsTestCase</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">test_sanity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">file_check</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">file_check</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]))</span>
+
+    <span class="k">def</span> <span class="nf">test_handle_line</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_equal</span><span class="p">(</span><span class="s1">'    sth()'</span><span class="p">,</span> <span class="s1">'#    sth()'</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_equal</span><span class="p">(</span><span class="s1">'    sth()'</span><span class="p">,</span> <span class="s1">'#    sth()'</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_equal</span><span class="p">(</span><span class="s1">'#    sth()'</span><span class="p">,</span> <span class="s1">'    sth()'</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_equal</span><span class="p">(</span><span class="s1">'#    sth()'</span><span class="p">,</span> <span class="s1">'    sth()'</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_equal</span><span class="p">(</span><span class="s1">'    sth()'</span><span class="p">,</span> <span class="s1">'    sth()'</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_equal</span><span class="p">(</span><span class="s1">'    sth()'</span><span class="p">,</span> <span class="s1">'#    sth()'</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_equal</span><span class="p">(</span><span class="s1">'#    sth()'</span><span class="p">,</span> <span class="s1">'#    sth()'</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_comment_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># TODO</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmnter</span><span class="o">.</span><span class="n">reverse</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmnter</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmnter</span><span class="o">.</span><span class="n">comment_file</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+        <span class="c1"># self.assertRaises(NotImplementedError, self.cmnter.comment_file)</span>
+
+    <span class="k">def</span> <span class="nf">test_old_comment_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmnter</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmnter</span><span class="o">.</span><span class="n">comment_file</span><span class="p">(</span><span class="n">in_pattern</span><span class="o">=</span><span class="s1">'\s+operations\s?=\s?\['</span><span class="p">,</span> <span class="n">out_pattern</span><span class="o">=</span><span class="s1">'\s+\]'</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">file_check</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="nb">range</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">23</span><span class="p">)]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">file_check</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="nb">range</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">24</span><span class="p">)]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">file_check</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="nb">range</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">25</span><span class="p">)]))</span>
+        <span class="c1">#</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">file_check</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="nb">range</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">23</span><span class="p">)]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">file_check</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="nb">range</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">20</span><span class="p">)]))</span>
+
+        <span class="n">atrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'lines'</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="s1">'comment'</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                <span class="s1">'path'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">'reverse'</span><span class="p">:</span> <span class="bp">False</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">atrs</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">test_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">test_all_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">atrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'all_lines'</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s1">'path'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                <span class="s1">'reverse'</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s1">'comment'</span><span class="p">:</span> <span class="bp">True</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">atrs</span><span class="p">,</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">21</span><span class="p">])</span>
+        <span class="n">atrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'all_lines'</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s1">'path'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                <span class="s1">'reverse'</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s1">'uncomment'</span><span class="p">:</span> <span class="bp">True</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">atrs</span><span class="p">,</span> <span class="p">[])</span>
+
+    <span class="k">def</span> <span class="nf">line_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line_in</span><span class="p">,</span> <span class="n">line_out</span><span class="p">,</span> <span class="n">cmnt</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmnter</span><span class="o">.</span><span class="n">handle_line</span><span class="p">(</span><span class="n">line_in</span><span class="p">,</span> <span class="n">cmnt</span><span class="p">,</span> <span class="n">reverse</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">line_out</span><span class="p">)</span>
+</pre></div>
+  </div>
+  <!--<div class="tag-cloud">
+    <p>
+      <a href="../tag/python.html">python</a>
+      <a href="../tag/cli.html">cli</a>
+      <a href="../tag/pypi.html">pypi</a>
+    </p>
+  </div>-->
+
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'tadeo';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+</article>
+<!--
+<script type="text/javascript">
+    var button = document.getElementById('wlacz')
+
+    console.log(button)
+    var elems = document.querySelectorAll('article a');
+    console.log(elems);
+    // var table = $("#nasza_tabela")
+    button.onclick = function(){
+        //   table.toggle()
+        for (var i = 0; i < elems.length; i++) {
+            // console.log(elems[i])
+            var linkEl = elems[i]
+            // linkEl.style.display = 'none'
+            linkEl.classList.add('tiptext')
+            linkEl.innerHTML += '<iframe class="description" src=""></iframe>'
+            linkEl.onmouseover = function(){
+                var iframeEl = linkEl.getElementsByTagName('iframe')[0]
+                iframeEl.src = this.getAttribute('href')
+                console.log(iframeEl.getAttribute('src'));
+                console.log(iframeEl);
+            }
+
+            // if (elems[i].style.visibility === "hidden") {
+            //     elems[i].style.visibility = "visible";
+            // } else {
+            //     elems[i].style.visibility = "hidden";
+            // }
+        }
+    }
+</script>
+-->
+
+<!--    <footer>
+<p>&copy; Tadek Teleżyński 2017</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer> -->
+  </main>
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-85737951-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Kubona ",
+  "url" : "..",
+  "image": "/images/initial.jpg",
+  "description": "Tadek Teleżyński's Thoughts and Writings"
+}
+</script>
+
+
+
+</body>
+</html>
